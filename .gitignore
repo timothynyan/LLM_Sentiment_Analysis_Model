@@ -1,1 +1,4 @@
-./database
+# .gitignore
+
+# Ignore the database directory
+database/
