@@ -1,31 +1,38 @@
 import pandas as pd
+import torch
 
 class Data:
-    def __init__(self, test, train, tokenizer):
+    def __init__(self, train, tokenizer, max_length=52):
         self.tokenizer = tokenizer
+        self.max_length = max_length
         
-        self.test = self.create_dataframe(test["pos"], test["neg"])
         self.train = self.create_dataframe(train["pos"], train["neg"])
         
-        # Tokenize the training data
-        self.train["input_ids"] = self.train["text"].apply(self.tokenizer.encode)
+        # Tokenize and pad the training data
+        self.train["input_ids"] = self.train["text"].apply(self.tokenize_and_pad)
         
-        # Tokenize the test data
-        self.test["input_ids"] = self.test["text"].apply(self.tokenizer.encode)
-        
-        # Pad the sequences
-        self.train["input_ids"] = self.pad_input_ids(self.train["input_ids"])
-        self.test["input_ids"] = self.pad_input_ids(self.test["input_ids"])
+        # Convert input_ids and sentiment to tensors
+        self.input_ids = torch.stack(self.train["input_ids"].tolist())
+        self.output = torch.tensor(self.train["sentiment"].apply(lambda x: 1 if x == "pos" else 0).tolist())
+
+    def __len__(self):
+        return len(self.input_ids)
+    
+    def __getitem__(self, idx):
+        return self.input_ids[idx], self.output[idx]
+    
 
     def create_dataframe(self, pos_data, neg_data):
         pos_df = pd.DataFrame({'text': pos_data, 'sentiment': 'pos'})
         neg_df = pd.DataFrame({'text': neg_data, 'sentiment': 'neg'})
-        df = pd.concat([pos_df, neg_df], ignore_index=True)
-        return df
+        return pd.concat([pos_df, neg_df], ignore_index=True)
     
-    def pad_input_ids(self, input_ids):
-        # Determine the maximum length of the input_ids
-        max_length = max([len(ids) for ids in input_ids])
+    def tokenize_and_pad(self, text):
+        input_ids = self.tokenizer.encode(text)
+        
         # Pad the input_ids
-        padded_input_ids = [ids + [0]*(max_length - len(ids)) for ids in input_ids]
-        return padded_input_ids
+        padded_input_ids = input_ids + [0] * (self.max_length - len(input_ids))
+        
+        padded_input_ids = padded_input_ids[:self.max_length]
+        
+        return torch.tensor(padded_input_ids)

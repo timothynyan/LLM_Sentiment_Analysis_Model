@@ -1,5 +1,7 @@
 import importlib
 import tiktoken
+from torch.utils.data import Dataset, DataLoader
+
 
 #Local Imports
 from dataloader import load_text_files
@@ -9,7 +11,14 @@ FILE_DIR = "../database"
 
 
 train = load_text_files(f"{FILE_DIR}/train")
-test = load_text_files(f"{FILE_DIR}/test")
 
 tokenizer = tiktoken.get_encoding("gpt2")
-database = Data(test, train, tokenizer, 512)
+database = Data(train, tokenizer)
+
+dataloader = DataLoader(database, batch_size=4, shuffle=True)
+#%%
+#Checking the batches
+data_iter = iter(dataloader)
+first_batch = next(data_iter)
+print(first_batch)
+#%%

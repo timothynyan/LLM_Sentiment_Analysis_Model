@@ -15,3 +15,5 @@ def load_text_files(folder_path):
     
     return data
 
+
+
