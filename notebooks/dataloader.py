@@ -14,3 +14,4 @@ def load_text_files(folder_path):
                         data[label].append(text)
     
     return data
+
