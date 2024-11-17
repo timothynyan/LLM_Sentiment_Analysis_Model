@@ -15,6 +15,8 @@ class Data:
         self.input_ids = torch.stack(self.train["input_ids"].tolist())
         self.output = torch.tensor(self.train["sentiment"].apply(lambda x: 1 if x == "pos" else 0).tolist())
 
+        self.embedding = None
+
     def __len__(self):
         return len(self.input_ids)
     
@@ -36,3 +38,6 @@ class Data:
         padded_input_ids = padded_input_ids[:self.max_length]
         
         return torch.tensor(padded_input_ids)
+    
+    def set_embedding(self, embedding):
+        self.embedding = embedding
