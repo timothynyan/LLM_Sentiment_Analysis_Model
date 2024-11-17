@@ -1,9 +1,7 @@
 import torch
-vocab_size = 50257
-output_dim = 256
-max_length = 52
 
-def get_embedding_layer(vocab_size, output_dim, dataloader):
+
+def get_embedding_layer(vocab_size, output_dim, dataloader, max_length=512):
     token_embedding_layer = torch.nn.Embedding(vocab_size, output_dim)
     pos_embedding_layer = torch.nn.Embedding(max_length, output_dim)
 

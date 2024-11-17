@@ -9,9 +9,8 @@ from dataloader import load_text_files
 from data import Data
 from embedding import get_embedding_layer
 
+#Constants 
 FILE_DIR = "../database"
-
-#Constants
 MAX_LENGTH = 52
 CONTEXT_LENGTH = MAX_LENGTH
 VOCAB_SIZE = 50257
@@ -22,7 +21,7 @@ OUTPUT_DIM = 256
 train = load_text_files(f"{FILE_DIR}/train")
 
 tokenizer = tiktoken.get_encoding("gpt2")
-database = Data(train, tokenizer)
+database = Data(train, tokenizer,max_length=MAX_LENGTH)
 
 dataloader = DataLoader(database, batch_size=4, shuffle=True)
 #%%
@@ -32,5 +31,5 @@ first_batch = next(data_iter)
 print(first_batch)
 #%%
 # Embedding the data into a 256 dimension space
-embeddings = get_embedding_layer(VOCAB_SIZE, OUTPUT_DIM, dataloader)
-database.set_embedding(embeddings)
+embeddings = get_embedding_layer(VOCAB_SIZE, OUTPUT_DIM, dataloader, max_length=MAX_LENGTH)
+database.set_embeddings(embeddings)
