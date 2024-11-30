@@ -219,3 +219,30 @@ with torch.no_grad():
 
 
 # %%
+# Custom test input
+while True:
+    user_input = input("Enter a sentence to test (or type 'exit' to quit): ")
+
+    if user_input.lower() == "exit":
+        break
+
+    # Tokenize the input
+    input_ids = tokenizer.encode(user_input)
+    input_tensor = torch.tensor(input_ids).unsqueeze(0).to(device)  # Add batch dimension
+
+    model.eval()
+    with torch.no_grad():
+        logits = model(input_tensor)
+        logits = logits.squeeze(-1)
+
+        # Convert logits to probabilities using sigmoid
+        probabilities = torch.sigmoid(logits[:, 0])
+
+        # Apply a threshold to classify as positive/negative
+        prediction = "pos" if probabilities.item() > 0.5 else "neg"
+
+        print(f"Input: {user_input}")
+        print(f"Prediction: {prediction}")
+        print(f"Probability: {probabilities.item():.4f}")
+
+# %%
