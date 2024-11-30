@@ -1,15 +1,15 @@
 import torch
 
+def get_embedding_layer(vocab_size, output_dim, dataloader, max_length, device='cpu'):
+    token_embedding_layer = torch.nn.Embedding(vocab_size, output_dim).to(device)
+    pos_embedding_layer = torch.nn.Embedding(max_length, output_dim).to(device)
 
-def get_embedding_layer(vocab_size, output_dim, dataloader, max_length=512):
-    token_embedding_layer = torch.nn.Embedding(vocab_size, output_dim)
-    pos_embedding_layer = torch.nn.Embedding(max_length, output_dim)
+    # Precompute positional embeddings
+    pos_embeddings = pos_embedding_layer(torch.arange(max_length, device=device)).unsqueeze(0)
 
-    embeddings = []
     for batch in dataloader:
         input_ids, labels = batch
+        input_ids = input_ids.to(device)
         token_embeddings = token_embedding_layer(input_ids)
-        pos_embeddings = pos_embedding_layer(torch.arange(max_length))
-        embeddings.append(token_embeddings + pos_embeddings)
-
-    return embeddings
+        # Use precomputed positional embeddings
+        yield token_embeddings + pos_embeddings[:, :input_ids.size(1), :]

@@ -5,11 +5,11 @@ from attention_mechanism import MultiHeadAttention
 
 
 class Data(Dataset):
-    def __init__(self, train, tokenizer, max_length=52, d_model=256, num_heads=8, dropout=0.1):
+    def __init__(self, train, tokenizer, cfg):
         self.tokenizer = tokenizer
-        self.max_length = max_length
-        self.d_model = d_model
-        self.num_heads = num_heads
+        self.max_length = cfg["context_length"]
+        self.d_model = cfg["d_model"]
+        self.num_heads = cfg["num_heads"]
         
         # Create DataFrame
         self.train = self.create_dataframe(train["pos"], train["neg"])
@@ -26,7 +26,7 @@ class Data(Dataset):
         self.attention_outputs = None
 
         # Initialize the multi-head attention mechanism
-        self.multihead_attention = MultiHeadAttention(d_model, d_model, max_length, dropout, num_heads)
+        self.multihead_attention = MultiHeadAttention(self.d_model, self.d_model, self.max_length, cfg["dropout"], self.num_heads)
 
     def create_dataframe(self, pos_data, neg_data):
         pos_df = pd.DataFrame({'text': pos_data, 'sentiment': 'pos'})
@@ -55,3 +55,6 @@ class Data(Dataset):
     def set_embeddings(self, embeddings):
         self.embeddings = embeddings
         self.attention_outputs = [self.multihead_attention(embed) for embed in embeddings]
+
+        
+    
