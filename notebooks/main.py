@@ -90,7 +90,9 @@ for epoch in range(num_epochs):
 
 
 # %%
-output_df = pd.DataFrame(columns=["text", "prediction", "original", "probability", "identical"])
+output_df = pd.DataFrame(
+    columns=["text", "prediction", "original", "probability", "identical"]
+)
 model.eval()
 with torch.no_grad():
     for batch in dataloader:
@@ -117,7 +119,7 @@ with torch.no_grad():
         original_text = tokenizer.decode(input_ids[0].tolist())
 
         # Check if the prediction is correct
-        identical = (prediction == orginal_labels)
+        identical = prediction == orginal_labels
 
         new_row = pd.DataFrame(
             {
@@ -138,24 +140,24 @@ with torch.no_grad():
 fig, axs = plt.subplots(1, 2, figsize=(12, 6))
 
 # Histogram of output_df["prediction"]
-output_df["prediction"].value_counts().sort_index().plot(kind='bar', ax=axs[0])
+output_df["prediction"].value_counts().sort_index().plot(kind="bar", ax=axs[0])
 axs[0].set_title("Prediction")
 axs[0].set_xlabel("Prediction")
 axs[0].set_ylabel("Count")
 
 # Add counts as text annotations
 for i, count in enumerate(output_df["prediction"].value_counts().sort_index()):
-    axs[0].text(i, count, str(count), ha='center', va='bottom')
+    axs[0].text(i, count, str(count), ha="center", va="bottom")
 
 # Histogram of output_df["original_label"]
-output_df["original"].value_counts().sort_index().plot(kind='bar', ax=axs[1])
+output_df["original"].value_counts().sort_index().plot(kind="bar", ax=axs[1])
 axs[1].set_title("Original")
 axs[1].set_xlabel("Original Label")
 axs[1].set_ylabel("Count")
 
 # Add counts as text annotations
 for i, count in enumerate(output_df["original"].value_counts().sort_index()):
-    axs[1].text(i, count, str(count), ha='center', va='bottom')
+    axs[1].text(i, count, str(count), ha="center", va="bottom")
 
 plt.tight_layout()
 plt.show()
@@ -169,9 +171,11 @@ plt.show()
 
 
 # %%
-#Evaluate the model on the test data
+# Evaluate the model on the test data
 test = load_text_files(f"{FILE_DIR}/test")
-output_df_test = pd.DataFrame(columns=["text", "prediction", "original", "probability", "identical"])
+output_df_test = pd.DataFrame(
+    columns=["text", "prediction", "original", "probability", "identical"]
+)
 database_test = Data(test, tokenizer, GPT_CONFIG)
 dataloader_test = DataLoader(database_test, batch_size=1, shuffle=True)
 
@@ -202,7 +206,7 @@ with torch.no_grad():
         original_text = tokenizer.decode(input_ids[0].tolist())
 
         # Check if the prediction is correct
-        identical = (prediction == orginal_labels)
+        identical = prediction == orginal_labels
 
         new_row = pd.DataFrame(
             {
@@ -228,7 +232,9 @@ while True:
 
     # Tokenize the input
     input_ids = tokenizer.encode(user_input)
-    input_tensor = torch.tensor(input_ids).unsqueeze(0).to(device)  # Add batch dimension
+    input_tensor = (
+        torch.tensor(input_ids).unsqueeze(0).to(device)
+    )  # Add batch dimension
 
     model.eval()
     with torch.no_grad():
