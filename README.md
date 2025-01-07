@@ -3,7 +3,7 @@
 This project is a personal endeavor aimed at exploring the intricacies of Large Language Models (LLMs) and their underlying mechanisms. Through this initiative, I delve into how LLMs generate meaningful and accurate predictions by analyzing text data and uncovering the layers that contribute to their training process.
 
 ## Model's Capability
-The model is designed to predict the accuracy of sentiment classifications with a current confidence level of **XXXX**. It achieves this by leveraging a robust training dataset and advanced machine learning architecture. With the current configuration, the model is optimized for high-accuracy predictions in diverse sentiment analysis tasks, including:  
+The model is designed to predict the accuracy of sentiment classifications with a current confidence level of **87.32**. It achieves this by leveraging a robust training dataset and advanced machine learning architecture. With the current configuration, the model is optimized for high-accuracy predictions in diverse sentiment analysis tasks, including:  
 - Customer feedback analysis  
 - Social media sentiment monitoring  
 - Product reviews classification    
